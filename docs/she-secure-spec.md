@@ -2,7 +2,7 @@
 
 **For:** OpenCode (model: `opencode/big-pickle`) + the `obra/superpowers` skills plugin
 **Stack:** Flutter (Android only, v1) · Firebase
-**Prepared:** 2026-07-19
+**Prepared:** 2026-07-19]
 
 ---
 
