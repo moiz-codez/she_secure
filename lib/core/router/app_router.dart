@@ -1,0 +1,80 @@
+import 'package:go_router/go_router.dart';
+import '../../features/splash/presentation/splash_screen.dart';
+import '../../features/onboarding/presentation/onboarding_screen.dart';
+import '../../features/auth/presentation/login_screen.dart';
+import '../../features/auth/presentation/signup_screen.dart';
+import '../../features/home/presentation/home_screen.dart';
+import '../../features/sos/presentation/sos_screen.dart';
+import '../../features/contacts/presentation/contacts_screen.dart';
+import '../../features/location/presentation/location_screen.dart';
+import '../../features/recordings/presentation/recordings_screen.dart';
+import '../../features/recordings/presentation/recording_detail_screen.dart';
+import '../../features/fake_call/presentation/fake_call_screen.dart';
+import '../../features/tutorial/presentation/tutorial_screen.dart';
+import '../../features/settings/presentation/settings_screen.dart';
+import '../../features/profile/presentation/profile_screen.dart';
+import 'routes.dart';
+
+final goRouter = GoRouter(
+  initialLocation: AppRoutes.splash,
+  routes: [
+    GoRoute(
+      path: AppRoutes.splash,
+      builder: (context, state) => const SplashScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.onboarding,
+      builder: (context, state) => const OnboardingScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.login,
+      builder: (context, state) => const LoginScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.signup,
+      builder: (context, state) => const SignupScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.home,
+      builder: (context, state) => const HomeScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.sos,
+      builder: (context, state) => const SosScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.contacts,
+      builder: (context, state) => const ContactsScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.location,
+      builder: (context, state) => const LocationScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.recordings,
+      builder: (context, state) => const RecordingsScreen(),
+      routes: [
+        GoRoute(
+          path: ':id',
+          builder: (context, state) => const RecordingDetailScreen(),
+        ),
+      ],
+    ),
+    GoRoute(
+      path: AppRoutes.fakeCall,
+      builder: (context, state) => const FakeCallScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.tutorial,
+      builder: (context, state) => const TutorialScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.settings,
+      builder: (context, state) => const SettingsScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.profile,
+      builder: (context, state) => const ProfileScreen(),
+    ),
+  ],
+);
