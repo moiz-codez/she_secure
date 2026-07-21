@@ -3,11 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:she_secure/features/auth/presentation/login_screen.dart';
 import 'package:she_secure/features/onboarding/presentation/onboarding_screen.dart';
 
-Widget _wrapWithRouter(Widget child) {
+Widget _wrapWithRouter(Widget child, {String initialLocation = '/onboarding'}) {
   final router = GoRouter(
-    initialLocation: '/onboarding',
+    initialLocation: initialLocation,
     routes: [
       GoRoute(
         path: '/onboarding',
@@ -15,8 +16,17 @@ Widget _wrapWithRouter(Widget child) {
       ),
       GoRoute(
         path: '/login',
+        builder: (context, state) => child,
+      ),
+      GoRoute(
+        path: '/signup',
         builder: (context, state) =>
-            const Scaffold(body: Center(child: Text('Login'))),
+            const Scaffold(body: Center(child: Text('Signup'))),
+      ),
+      GoRoute(
+        path: '/home',
+        builder: (context, state) =>
+            const Scaffold(body: Center(child: Text('Home'))),
       ),
     ],
   );
@@ -24,35 +34,106 @@ Widget _wrapWithRouter(Widget child) {
 }
 
 void main() {
-  testWidgets('Onboarding shows first page', (tester) async {
-    SharedPreferences.setMockInitialValues({});
+  group('Onboarding tests', () {
+    testWidgets('Onboarding shows first page', (tester) async {
+      SharedPreferences.setMockInitialValues({});
 
-    await tester.pumpWidget(_wrapWithRouter(const OnboardingScreen()));
+      await tester.pumpWidget(_wrapWithRouter(const OnboardingScreen()));
 
-    expect(find.text('Welcome to SheSecure'), findsOneWidget);
-    expect(find.text('Next'), findsOneWidget);
-    expect(find.text('Skip'), findsOneWidget);
+      expect(find.text('Welcome to SheSecure'), findsOneWidget);
+      expect(find.text('Next'), findsOneWidget);
+      expect(find.text('Skip'), findsOneWidget);
+    });
+
+    testWidgets('Onboarding navigates to next page', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+
+      await tester.pumpWidget(_wrapWithRouter(const OnboardingScreen()));
+
+      await tester.tap(find.text('Next'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Emergency SOS'), findsOneWidget);
+    });
+
+    testWidgets('Skip button completes onboarding', (tester) async {
+      final prefs = await SharedPreferences.getInstance();
+
+      await tester.pumpWidget(_wrapWithRouter(const OnboardingScreen()));
+
+      await tester.tap(find.text('Skip'));
+      await tester.pumpAndSettle();
+
+      expect(prefs.getBool('hasSeenOnboarding'), true);
+    });
   });
 
-  testWidgets('Onboarding navigates to next page', (tester) async {
-    SharedPreferences.setMockInitialValues({});
+  group('Login tests', () {
+    testWidgets('Login shows email and password fields', (tester) async {
+      SharedPreferences.setMockInitialValues({});
 
-    await tester.pumpWidget(_wrapWithRouter(const OnboardingScreen()));
+      await tester.pumpWidget(
+        _wrapWithRouter(
+          const LoginScreen(),
+          initialLocation: '/login',
+        ),
+      );
 
-    await tester.tap(find.text('Next'));
-    await tester.pumpAndSettle();
+      expect(find.byType(TextFormField), findsNWidgets(2));
+      expect(find.text('Login'), findsOneWidget);
+    });
 
-    expect(find.text('Emergency SOS'), findsOneWidget);
-  });
+    testWidgets('Login validates empty fields', (tester) async {
+      SharedPreferences.setMockInitialValues({});
 
-  testWidgets('Skip button completes onboarding', (tester) async {
-    final prefs = await SharedPreferences.getInstance();
+      await tester.pumpWidget(
+        _wrapWithRouter(
+          const LoginScreen(),
+          initialLocation: '/login',
+        ),
+      );
 
-    await tester.pumpWidget(_wrapWithRouter(const OnboardingScreen()));
+      await tester.tap(find.text('Login'));
+      await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Skip'));
-    await tester.pumpAndSettle();
+      expect(find.text('Email is required'), findsOneWidget);
+      expect(find.text('Password is required'), findsOneWidget);
+    });
 
-    expect(prefs.getBool('hasSeenOnboarding'), true);
+    testWidgets('Login validates email format', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+
+      await tester.pumpWidget(
+        _wrapWithRouter(
+          const LoginScreen(),
+          initialLocation: '/login',
+        ),
+      );
+
+      await tester.enterText(find.byType(TextFormField).first, 'invalidemail');
+      await tester.enterText(find.byType(TextFormField).last, 'password123');
+      await tester.tap(find.text('Login'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Enter a valid email'), findsOneWidget);
+    });
+
+    testWidgets('Login validates password length', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+
+      await tester.pumpWidget(
+        _wrapWithRouter(
+          const LoginScreen(),
+          initialLocation: '/login',
+        ),
+      );
+
+      await tester.enterText(find.byType(TextFormField).first, 'test@example.com');
+      await tester.enterText(find.byType(TextFormField).last, '123');
+      await tester.tap(find.text('Login'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Minimum 6 characters'), findsOneWidget);
+    });
   });
 }
