@@ -41,6 +41,12 @@ dependencies:
   firebase_core: ^3.12.1
   firebase_auth: ^5.5.1
 
+  # Local storage
+  shared_preferences: ^2.3.4
+
+  # Cloud Firestore
+  cloud_firestore: ^5.6.5
+
   # Design system
   google_fonts: ^6.2.1
   phosphor_flutter: ^2.1.0
