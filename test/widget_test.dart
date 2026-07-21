@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:she_secure/features/auth/presentation/login_screen.dart';
+import 'package:she_secure/features/auth/presentation/signup_screen.dart';
 import 'package:she_secure/features/onboarding/presentation/onboarding_screen.dart';
 
 Widget _wrapWithRouter(Widget child, {String initialLocation = '/onboarding'}) {
@@ -20,8 +21,7 @@ Widget _wrapWithRouter(Widget child, {String initialLocation = '/onboarding'}) {
       ),
       GoRoute(
         path: '/signup',
-        builder: (context, state) =>
-            const Scaffold(body: Center(child: Text('Signup'))),
+        builder: (context, state) => child,
       ),
       GoRoute(
         path: '/home',
@@ -134,6 +134,61 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Minimum 6 characters'), findsOneWidget);
+    });
+  });
+
+  group('Signup tests', () {
+    testWidgets('Signup shows all form fields', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+
+      await tester.pumpWidget(
+        _wrapWithRouter(
+          const SignupScreen(),
+          initialLocation: '/signup',
+        ),
+      );
+
+      expect(find.byType(TextFormField), findsNWidgets(4));
+      expect(find.text('Sign Up'), findsOneWidget);
+    });
+
+    testWidgets('Signup validates empty fields', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+
+      await tester.pumpWidget(
+        _wrapWithRouter(
+          const SignupScreen(),
+          initialLocation: '/signup',
+        ),
+      );
+
+      await tester.tap(find.text('Sign Up'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Name is required'), findsOneWidget);
+      expect(find.text('Email is required'), findsOneWidget);
+      expect(find.text('Password is required'), findsOneWidget);
+    });
+
+    testWidgets('Signup validates password mismatch', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+
+      await tester.pumpWidget(
+        _wrapWithRouter(
+          const SignupScreen(),
+          initialLocation: '/signup',
+        ),
+      );
+
+      await tester.enterText(find.widgetWithText(TextFormField, 'Full Name'), 'Test User');
+      await tester.enterText(find.widgetWithText(TextFormField, 'Email'), 'test@test.com');
+      await tester.enterText(find.widgetWithText(TextFormField, 'Password'), 'password123');
+      await tester.enterText(find.widgetWithText(TextFormField, 'Confirm Password'), 'different');
+
+      await tester.tap(find.text('Sign Up'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Passwords do not match'), findsOneWidget);
     });
   });
 }
