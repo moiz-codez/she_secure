@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../features/splash/presentation/splash_screen.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
@@ -15,9 +16,10 @@ import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
 import 'routes.dart';
 
-final goRouter = GoRouter(
-  initialLocation: AppRoutes.splash,
-  routes: [
+final appRouterProvider = Provider<GoRouter>(
+  (ref) => GoRouter(
+    initialLocation: AppRoutes.splash,
+    routes: [
     GoRoute(
       path: AppRoutes.splash,
       builder: (context, state) => const SplashScreen(),
@@ -76,5 +78,6 @@ final goRouter = GoRouter(
       path: AppRoutes.profile,
       builder: (context, state) => const ProfileScreen(),
     ),
-  ],
+    ],
+  ),
 );

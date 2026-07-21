@@ -13,16 +13,17 @@ void main() async {
   runApp(const ProviderScope(child: SheSecureApp()));
 }
 
-class SheSecureApp extends StatelessWidget {
+class SheSecureApp extends ConsumerWidget {
   const SheSecureApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(appRouterProvider);
     return MaterialApp.router(
       title: 'She-Secure',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
-      routerConfig: goRouter,
+      routerConfig: router,
     );
   }
 }

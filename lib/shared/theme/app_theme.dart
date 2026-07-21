@@ -104,6 +104,42 @@ abstract final class AppTheme {
         ),
         margin: EdgeInsets.zero,
       ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.accentBrand,
+          foregroundColor: AppColors.textPrimary,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          textStyle: AppTextStyles.buttonLabel,
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: AppColors.bgElevated2,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: AppColors.borderSubtle),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: AppColors.borderSubtle),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: AppColors.accentBrand, width: 2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: AppColors.accentAlert),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        hintStyle: AppTextStyles.bodyMedium.copyWith(
+          color: AppColors.textDisabled,
+        ),
+      ),
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.bgBase,
         foregroundColor: AppColors.textPrimary,
@@ -116,7 +152,8 @@ abstract final class AppTheme {
         displayMedium: AppTextStyles.displayMedium,
         headlineLarge: AppTextStyles.headingLarge,
         headlineMedium: AppTextStyles.headingMedium,
-        titleLarge: AppTextStyles.sectionLabel,
+        titleLarge: AppTextStyles.headingMedium,
+        titleMedium: AppTextStyles.sectionLabel,
         bodyLarge: AppTextStyles.bodyLarge,
         bodyMedium: AppTextStyles.bodyMedium,
         labelSmall: AppTextStyles.caption,
