@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_core_platform_interface/test.dart';
 
 import 'package:she_secure/features/auth/presentation/login_screen.dart';
 import 'package:she_secure/features/auth/presentation/signup_screen.dart';
 import 'package:she_secure/features/onboarding/presentation/onboarding_screen.dart';
+import 'package:she_secure/features/profile/presentation/profile_screen.dart';
 
 Widget _wrapWithRouter(Widget child, {String initialLocation = '/onboarding'}) {
   final router = GoRouter(
@@ -189,6 +192,56 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Passwords do not match'), findsOneWidget);
+    });
+  });
+
+  group('Profile tests', () {
+    setUpAll(() async {
+      setupFirebaseCoreMocks();
+      await Firebase.initializeApp();
+    });
+
+    testWidgets('Profile shows user info placeholders', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+
+      await tester.pumpWidget(
+        const MaterialApp(home: ProfileScreen()),
+      );
+
+      expect(find.text('Name'), findsOneWidget);
+      expect(find.text('Email'), findsOneWidget);
+      expect(find.text('Phone'), findsOneWidget);
+      expect(find.text('Logout'), findsOneWidget);
+    });
+
+    testWidgets('Profile shows logout button', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+
+      await tester.pumpWidget(
+        const MaterialApp(home: ProfileScreen()),
+      );
+
+      expect(find.byIcon(Icons.logout), findsOneWidget);
+    });
+
+    testWidgets('Profile shows profile title in app bar', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+
+      await tester.pumpWidget(
+        const MaterialApp(home: ProfileScreen()),
+      );
+
+      expect(find.text('Profile'), findsOneWidget);
+    });
+
+    testWidgets('Profile shows avatar with fallback letter', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+
+      await tester.pumpWidget(
+        const MaterialApp(home: ProfileScreen()),
+      );
+
+      expect(find.byType(CircleAvatar), findsOneWidget);
     });
   });
 }
