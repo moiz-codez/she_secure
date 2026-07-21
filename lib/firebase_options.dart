@@ -19,11 +19,12 @@ class DefaultFirebaseOptions {
   }
 
   // TODO: Replace with real values from your Firebase project
+
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'YOUR_API_KEY',
-    appId: 'YOUR_APP_ID',
-    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
-    projectId: 'YOUR_PROJECT_ID',
-    storageBucket: 'YOUR_STORAGE_BUCKET',
+    apiKey: 'AIzaSyAVA_nf_NwnQkE24xisGC5f97x-u5ec8E8',
+    appId: '1:560925700799:android:6d2060a6c5c7944d1d8c0a',
+    messagingSenderId: '560925700799',
+    projectId: 'she-2b713',
+    storageBucket: 'she-2b713.firebasestorage.app',
   );
 }

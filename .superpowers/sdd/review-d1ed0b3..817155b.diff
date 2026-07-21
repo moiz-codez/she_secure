@@ -1,0 +1,2 @@
+﻿ echo "# Review package: d1ed0b3..817155b"; echo; echo "## Commits"; git log --oneline d1ed0b3..HEAD; echo; echo "## 
+Files changed"; git diff --stat d1ed0b3..HEAD; echo; echo "## Diff"; git diff -U10 d1ed0b3..HEAD 
