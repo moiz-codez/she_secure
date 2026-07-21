@@ -1,19 +1,39 @@
-# Task 4: Create ThemeData with ThemeExtensions - Report
+# Task 4 Report: Login Form + Firebase Auth
 
-## What was implemented
-Created `app_theme.dart` containing:
-- `AppColorsThemeExtension` class extending `ThemeExtension` to expose app color tokens through the theme
-- `AppTheme` abstract final class with a static `darkTheme` getter returning a `ThemeData` configured for the She-Secure dark theme
-- `AppColorsExtension` extension on `BuildContext` for convenient access to app colors via `context.appColors`
+## What I Implemented
+- Complete login screen with email/password form
+- Form validation (email required, valid email format, password required, minimum 6 characters)
+- Firebase Auth integration for sign-in
+- Loading state during authentication
+- Error handling with snackbar for Firebase Auth exceptions
+- Navigation to home screen after successful login
+- Link to signup screen
+- UI tests for login form validation and UI elements
 
-The `AppColorsThemeExtension` was made public (renamed from `_AppColorsExtension`) to avoid the `library_private_types_in_public_api` analyzer warning.
+## Files Changed
+- `lib/features/auth/presentation/login_screen.dart` - Complete rewrite from stub to functional login screen
+- `test/widget_test.dart` - Added 4 login tests while preserving existing onboarding tests
 
-## Files changed
-- **Created:** `lib/shared/theme/app_theme.dart`
+## Implementation Details
+- Used `AppTextStyles` directly (not through theme extension) to match existing codebase patterns
+- Form validation includes email format check and password length requirement
+- Firebase Auth errors are caught and displayed via SnackBar
+- Loading state disables button and shows progress indicator
+- All tests pass (7 total: 3 onboarding + 4 login)
 
-## Verification
-- Ran `dart analyze lib/shared/theme/` → No issues found
-- Committed as `d1ed0b3` with message "feat: add ThemeData with ThemeExtensions"
+## Test Results
+All 7 tests passed:
+- Onboarding shows first page
+- Onboarding navigates to next page  
+- Skip button completes onboarding
+- Login shows email and password fields
+- Login validates empty fields
+- Login validates email format
+- Login validates password length
+
+## Commit
+- **SHA:** 27a06e4
+- **Message:** feat(auth): add login form with Firebase Auth integration
 
 ## Concerns
-None. The implementation follows Flutter best practices for ThemeExtensions and integrates cleanly with the existing `AppColors` and `AppTextStyles` from Tasks 2 and 3.
+None - implementation follows spec and codebase conventions. All tests pass.

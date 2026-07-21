@@ -1,22 +1,24 @@
-# Task 2 Report: Add Phase 0 Dependencies
+# Task 2: Splash redirect logic + tests
 
 ## What was implemented
-Updated `pubspec.yaml` with all Phase 0 dependencies for the She-Secure Flutter app.
+
+Rewrote `SplashScreen` from a stateless placeholder to a `StatefulWidget` that:
+1. Delays 2 seconds on launch
+2. Checks `SharedPreferences` for `hasSeenOnboarding`
+3. Redirects to `/onboarding` if false/null, otherwise to `/login`
+4. Includes a `TODO` comment for Firebase Auth check (Task 4)
+
+The branding text was updated from `'Splash'` to `'SheSecure'` / `'Safety at your fingertips'`.
 
 ## Files changed
-- `pubspec.yaml` - Added flutter_riverpod, go_router, firebase_core, firebase_auth, google_fonts, phosphor_flutter to dependencies; cleaned up dev_dependencies.
 
-## Dependencies added
-- **flutter_riverpod: ^2.6.1** - State management
-- **go_router: ^14.8.1** - Routing
-- **firebase_core: ^3.12.1** - Firebase core
-- **firebase_auth: ^5.5.1** - Firebase authentication
-- **google_fonts: ^6.2.1** - Custom fonts
-- **phosphor_flutter: 2.1.0** - Icons (note: ^2.1.1 was unavailable, used 2.1.0)
+- `lib/features/splash/presentation/splash_screen.dart` — rewritten as StatefulWidget with redirect logic
+- `test/widget_test.dart` — rewritten with GoRouter-based test that verifies branding text
 
-## Verification
-- `flutter pub get` completed successfully
-- `dart analyze lib/main.dart` returned no errors
+## Test approach
 
-## Concerns
-- phosphor_flutter version was adjusted from ^2.1.1 to 2.1.0 due to version availability
+The test uses `GoRouter` (not plain `MaterialApp`) because the splash screen calls `context.go(...)`, which requires a GoRouter ancestor. SharedPreferences is mocked with `hasSeenOnboarding: true` so the redirect goes to `/login`. After `pump(Duration(seconds: 2))` the timer resolves cleanly.
+
+## Commit
+
+`3020a86` — `feat(splash): add redirect logic with onboarding check`

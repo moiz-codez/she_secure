@@ -1,27 +1,37 @@
-# Task 5 Report: Create route constants and go_router config
+# Task 5: Signup form + Firebase Auth + tests
 
-## What Was Implemented
+## What I implemented
 
-Created two files for app-wide routing:
+**SignupScreen** — full signup form with Firebase Auth and Firestore profile creation.
 
-1. **`lib/core/router/routes.dart`** - `AppRoutes` abstract final class with 14 static path constants (splash, onboarding, login, signup, home, sos, contacts, location, recordings, recordingDetail, fakeCall, tutorial, settings, profile).
+### Features
+- Full Name, Email, Password, Confirm Password fields with validation
+- Firebase Auth `createUserWithEmailAndPassword` 
+- Firestore write: `users/{uid}` with name, email, createdAt
+- Loading state (button disabled + spinner)
+- Error handling via SnackBar for FirebaseAuthException
+- Navigate to `/home` on success
+- Link to `/login` for existing accounts
 
-2. **`lib/core/router/app_router.dart`** - `GoRouter` instance (`goRouter`) configured with all 14 routes, including a nested route for recording detail (`/recordings/:id`). Initial location set to splash.
+### Validation rules
+- Name: required
+- Email: required, must contain `@`
+- Password: required, minimum 6 characters
+- Confirm: must match password
 
-## Files Changed
+## Files changed
 
 | File | Action |
 |------|--------|
-| `lib/core/router/routes.dart` | Created |
-| `lib/core/router/app_router.dart` | Created |
+| `lib/features/auth/presentation/signup_screen.dart` | Rewritten (stub → full form) |
+| `test/widget_test.dart` | Updated (added 3 signup tests) |
 
-## Verification
+## Tests (10/10 passing)
 
-- `dart analyze lib/core/router/` passed with no issues
-- All 14 stub screens from `lib/features/*/presentation/` confirmed to exist and import correctly
-- go_router v14.8.1 already in pubspec.yaml
+- **Onboarding:** first page, next page, skip completes
+- **Login:** fields present, empty validation, email format, password length
+- **Signup:** fields present (4), empty validation (name/email/password), password mismatch
 
 ## Issues / Concerns
 
-- Removed unused `flutter/material.dart` import from `app_router.dart` (was flagged by analyzer).
-- The `goRouter` instance is a top-level `final` — appropriate for Phase 1. Will be refactored to use Riverpod `Provider` when auth logic is added in Phase 2.
+None. All tests pass, `flutter analyze` clean.

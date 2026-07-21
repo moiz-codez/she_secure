@@ -1,22 +1,28 @@
-# Task 3: Create color tokens and text styles — Report
-
-## Status: DONE
+# Task 3: Onboarding PageView + Tests
 
 ## What was implemented
-- `AppColors` class with static color constants for backgrounds, accents, text, borders, and gradients
-- `AppTextStyles` class with static TextStyle getters using Sora (headings), Inter (body), and JetBrains Mono (mono) from google_fonts
 
-## Files created
-- `lib/shared/theme/app_colors.dart` (32 lines)
-- `lib/shared/theme/app_text_styles.dart` (78 lines)
+- Rewrote `OnboardingScreen` from a placeholder `StatelessWidget` to a full `StatefulWidget` with a 3-page `PageView`
+- Three onboarding pages: Welcome, Emergency SOS, Fake Call — each with title, body, and icon
+- Animated dot indicators (width transitions between active/inactive)
+- Next / Get Started button at the bottom
+- Skip button in top-right corner
+- On completion: sets `hasSeenOnboarding` to `true` in SharedPreferences, then navigates to `/login` via `context.go()`
+- Used `AppTextStyles` static class directly (not a ThemeExtension) for text styling, matching codebase conventions
 
-## Verification
-- `dart analyze lib/shared/theme/` — No issues found
+## Files changed
 
-## Commit
-- `2889dce` feat: add color tokens and text styles
+- `lib/features/onboarding/presentation/onboarding_screen.dart` — full rewrite
+- `test/widget_test.dart` — full rewrite with 3 onboarding tests
+
+## Test summary
+
+All 3 tests pass:
+1. **Onboarding shows first page** — verifies Welcome title, Next button, Skip button
+2. **Onboarding navigates to next page** — taps Next, verifies Emergency SOS page
+3. **Skip button completes onboarding** — taps Skip, verifies SharedPreferences flag set
 
 ## Notes
-- Both files use `abstract final class` pattern for a pure utility class
-- All colors are `const` for compile-time constants
-- Text styles use `GoogleFonts.sora()`, `GoogleFonts.inter()`, and `GoogleFonts.jetBrainsMono()` factories
+
+- `AppTextStyles` is a static utility class, not a `ThemeExtension`. Accessed directly as `AppTextStyles.displayMedium` etc.
+- Tests use `GoRouter` wrapper since `_complete()` calls `context.go('/login')`

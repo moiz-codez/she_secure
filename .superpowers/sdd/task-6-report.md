@@ -1,34 +1,32 @@
-# Task 6 Report: Create main.dart entry point
+# Task 6: Profile view-only + logout — Report
 
-## What I implemented
+## What was implemented
 
-Replaced the default Flutter counter app in `lib/main.dart` with the She-Secure app entry point that:
-- Uses Riverpod for state management (`ProviderScope`)
-- Configures the app with `MaterialApp.router` for navigation
-- Applies the custom dark theme from `AppTheme.darkTheme`
-- Uses the `goRouter` configuration for routing
-- Sets the app title to 'She-Secure'
-- Disables the debug banner
+Rewrote the profile screen as a view-only page that displays the current Firebase user's name, email, and phone, plus a logout button. Also rewrote widget tests to cover the profile screen.
 
 ## Files changed
 
-- `lib/main.dart` - Complete replacement of file content
+| File | Change |
+|------|--------|
+| `lib/features/profile/presentation/profile_screen.dart` | Rewritten: CircleAvatar with initial, three `_ProfileTile` widgets (Name, Email, Phone), logout `OutlinedButton.icon` that signs out via `FirebaseAuth`, clears `SharedPreferences`, and navigates to `/login` |
+| `test/widget_test.dart` | Added `Profile tests` group (4 tests). Added Firebase mock imports (`firebase_core`, `firebase_core_platform_interface/test.dart`) and `setUpAll` with `setupFirebaseCoreMocks()` + `Firebase.initializeApp()` for the profile group |
+| `pubspec.yaml` | Added `firebase_core_platform_interface: ^6.0.3` to dev_dependencies (needed for `setupFirebaseCoreMocks` in tests) |
+| `pubspec.lock` | Auto-updated |
 
-## Verification
+## Key decisions
 
-- Ran `dart analyze lib/main.dart` - No issues found
-- Committed with message: "feat: add app entry point with Riverpod and router"
-- Commit SHA: 0f83ee0
+- **Text styles:** Used `AppTextStyles.caption` and `AppTextStyles.bodyLarge` (static class, matching existing codebase pattern from `LoginScreen`/`SignupScreen`). Did NOT use `theme.textStyles` which doesn't exist.
+- **Firebase in tests:** ProfileScreen accesses `FirebaseAuth.instance.currentUser` in `build()`, which requires Firebase initialization. Added `firebase_core_platform_interface` as a dev dependency and used `setupFirebaseCoreMocks()` + `Firebase.initializeApp()` in `setUpAll` for the profile test group.
+- **No `cloud_firestore` import in screen:** Removed the `cloud_firestore` import from the spec since it's not needed for this screen (only reads from `FirebaseAuth`).
 
-## Dependencies used
+## Test results
 
-- `flutter_riverpod` for state management
-- `go_router` for navigation
-- Custom theme from `shared/theme/app_theme.dart`
-- Router configuration from `core/router/app_router.dart`
+14/14 passing — 3 onboarding, 4 login, 3 signup, 4 profile.
 
-## Notes
+## Commit
 
-- Firebase initialization is deferred to Task 7 as specified
-- The app will show the Splash screen on launch (configured in the router)
-- All screen imports in the router are already set up from previous tasks
+`3d8322d` — `feat(profile): add view-only profile with logout`
+
+## Concerns
+
+None.
