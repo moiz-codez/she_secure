@@ -8,7 +8,7 @@ Build in the phases defined in Section 12 of that spec, one phase per session. D
 
 ## Current status
 
-Phase 0 (Foundation) is complete and tagged `phase-0-complete`. Next is Phase 1 (Auth & onboarding).
+Phase 0 (Foundation) is complete and tagged `phase-0-complete`. Phase 1 (Auth & onboarding) is complete and tagged `phase-1-complete`. Next is Phase 2.
 
 ## Build / test / lint
 
@@ -42,7 +42,7 @@ lib/
 │   ├── tutorial/presentation/
 │   ├── settings/presentation/
 │   └── profile/presentation/
-├── firebase_options.dart  # placeholder — needs real values
+├── firebase_options.dart  # real Firebase creds (project: she-2b713)
 └── main.dart
 ```
 
@@ -50,6 +50,7 @@ lib/
 
 - **State management:** Riverpod. App entry point is `ProviderScope > SheSecureApp` (ConsumerWidget).
 - **Routing:** go_router, wrapped in `appRouterProvider` (Provider<GoRouter>). All 14 routes from spec Section 5 are stubbed. Splash is the initial route.
+- **Auth redirect:** `AuthStateNotifier` wraps `FirebaseAuth.authStateChanges()` as a `ChangeNotifier`, wired as `refreshListenable` on GoRouter. The `redirect` callback in `app_router.dart` handles onboarding-seen check + auth state routing reactively. This is the critical pattern — don't add manual auth checks in individual screens.
 - **Theme:** Dark-only `ThemeData` with `ThemeExtension<AppColorsThemeExtension>`. Access via `context.appColors`. Button and input themes centralized in `AppTheme.darkTheme`.
 - **Fonts:** Sora (display), Inter (body), JetBrains Mono (data) via `google_fonts`.
 - **Icons:** `phosphor_flutter`.
@@ -57,13 +58,11 @@ lib/
 
 ## Firebase
 
-`lib/firebase_options.dart` has placeholder values (`YOUR_API_KEY`, etc.). Before Phase 1, run:
+`lib/firebase_options.dart` has real credentials for project `she-2b713`. If you need to reconfigure:
 
 ```
 flutterfire configure --platforms android
 ```
-
-This overwrites `firebase_options.dart` with real credentials from your Firebase project. The app compiles with placeholders but won't authenticate.
 
 ## Git workflow
 
