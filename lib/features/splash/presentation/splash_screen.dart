@@ -29,7 +29,6 @@ class _SplashScreenState extends State<SplashScreen> {
     if (!hasSeenOnboarding) {
       context.go('/onboarding');
     } else {
-      // TODO: Firebase Auth check will be added in Task 4
       context.go('/login');
     }
   }
