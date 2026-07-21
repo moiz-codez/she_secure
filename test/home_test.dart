@@ -36,9 +36,9 @@ void main() {
     testWidgets('SOS hero uses correct colors', (tester) async {
       // The SOS hero should use accentBrand (red) color
       const brandColor = Color(0xFFC0392B); // AppColors.accentBrand
-      expect(brandColor.red, 192);
-      expect(brandColor.green, 57);
-      expect(brandColor.blue, 43);
+      expect(brandColor.r, closeTo(0.75, 0.01));
+      expect(brandColor.g, closeTo(0.22, 0.01));
+      expect(brandColor.b, closeTo(0.17, 0.01));
     });
 
     testWidgets('Greeting displays time-based greeting', (tester) async {
