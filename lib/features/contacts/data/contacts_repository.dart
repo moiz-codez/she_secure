@@ -83,17 +83,20 @@ class ContactsRepository {
 class ContactsLimitException implements Exception {
   final int max;
   ContactsLimitException(this.max);
+  @override
   String toString() => 'Maximum of $max trusted contacts reached.';
 }
 
 class DuplicatePhoneException implements Exception {
   final String phone;
   DuplicatePhoneException(this.phone);
+  @override
   String toString() => 'This number is already in your contacts.';
 }
 
 class ContactNotFoundException implements Exception {
   final String id;
   ContactNotFoundException(this.id);
+  @override
   String toString() => 'Contact not found.';
 }
