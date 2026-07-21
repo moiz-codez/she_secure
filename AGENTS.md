@@ -8,7 +8,7 @@ Build in the phases defined in Section 12 of that spec, one phase per session. D
 
 ## Current status
 
-Phase 0 (Foundation) is complete and tagged `phase-0-complete`. Phase 1 (Auth & onboarding) is complete and tagged `phase-1-complete`. Next is Phase 2.
+Phase 0 (Foundation) is complete and tagged `phase-0-complete`. Phase 1 (Auth & onboarding) is complete and tagged `phase-1-complete`. Phase 2a (Home Shell + Trusted Contacts) is complete and tagged `phase-2a-complete`. Next is Phase 2b.
 
 ## Build / test / lint
 
