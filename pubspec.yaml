@@ -47,6 +47,14 @@ dependencies:
   # Cloud Firestore
   cloud_firestore: ^5.6.5
 
+  # Contacts & permissions
+  flutter_contacts: ^1.1.0
+  permission_handler: ^11.3.0
+
+  # Sharing & launching
+  share_plus: ^10.0.0
+  url_launcher: ^6.3.0
+
   # Design system
   google_fonts: ^6.2.1
   phosphor_flutter: ^2.1.0
