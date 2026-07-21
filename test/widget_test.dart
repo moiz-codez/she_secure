@@ -6,16 +6,19 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:she_secure/main.dart';
+import 'package:she_secure/features/splash/presentation/splash_screen.dart';
 
 void main() {
-  testWidgets('App smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const SheSecureApp());
+  testWidgets('App smoke test — renders Splash screen', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      const ProviderScope(child: SheSecureApp()),
+    );
 
-    // Verify the app renders without crashing.
-    expect(find.byType(Widget), findsWidgets);
+    expect(find.byType(SplashScreen), findsOneWidget);
+    expect(find.text('Splash'), findsOneWidget);
   });
 }
