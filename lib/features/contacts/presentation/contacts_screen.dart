@@ -167,10 +167,10 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
       ),
       builder: (_) => ConfirmDeleteSheet(
         contactName: contact.name,
-        onConfirm: () async {
+        onConfirm: () {
+          Navigator.pop(context);
           final repo = ref.read(contactsRepositoryProvider);
-          await repo.deleteContact(contact.id);
-          if (context.mounted) Navigator.pop(context);
+          repo.deleteContact(contact.id);
         },
       ),
     );
