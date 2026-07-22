@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:she_secure/features/contacts/data/contacts_providers.dart';
@@ -113,9 +114,22 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
       context,
       MaterialPageRoute(
         builder: (_) => RationaleScreen(
-          onContinue: () {
+          onContinue: () async {
             Navigator.pop(context); // Close rationale
-            _showPhoneImport(context);
+            final granted = await FlutterContacts.requestPermission();
+            if (!granted) {
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Contacts permission denied. You can add contacts manually.',
+                    ),
+                  ),
+                );
+              }
+              return;
+            }
+            if (context.mounted) _showPhoneImport(context);
           },
         ),
       ),

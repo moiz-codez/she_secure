@@ -27,16 +27,6 @@ class _PhoneImportSheetState extends ConsumerState<PhoneImportSheet> {
 
   Future<void> _loadContacts() async {
     try {
-      final granted = await FlutterContacts.requestPermission();
-      if (!granted) {
-        setState(() {
-          _error =
-              'Contacts permission denied. You can add contacts manually instead.';
-          _isLoading = false;
-        });
-        return;
-      }
-
       final contacts = await FlutterContacts.getContacts(
         withProperties: true,
       );
