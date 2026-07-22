@@ -72,7 +72,21 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddOptions(context),
+        onPressed: () {
+          final contacts =
+              ref.read(contactsStreamProvider).valueOrNull ?? const [];
+          if (contacts.length >= 5) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                  'You can add up to 5 trusted contacts. Remove one first to add another.',
+                ),
+              ),
+            );
+            return;
+          }
+          _showAddOptions(context);
+        },
         backgroundColor: AppColors.accentBrand,
         child: const Icon(PhosphorIconsBold.plus, color: AppColors.textPrimary),
       ),

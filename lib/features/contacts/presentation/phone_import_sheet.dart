@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:she_secure/features/contacts/data/contacts_repository.dart';
 import 'package:she_secure/features/contacts/data/contacts_providers.dart';
 import 'package:she_secure/features/contacts/data/trusted_contact.dart';
@@ -28,18 +27,11 @@ class _PhoneImportSheetState extends ConsumerState<PhoneImportSheet> {
 
   Future<void> _loadContacts() async {
     try {
-      final permission = await Permission.contacts.request();
-      if (permission.isDenied) {
+      final granted = await FlutterContacts.requestPermission();
+      if (!granted) {
         setState(() {
-          _error = 'Contacts permission denied. You can add contacts manually instead.';
-          _isLoading = false;
-        });
-        return;
-      }
-
-      if (permission.isPermanentlyDenied) {
-        setState(() {
-          _error = 'Contacts permission permanently denied. Please enable it in Settings.';
+          _error =
+              'Contacts permission denied. You can add contacts manually instead.';
           _isLoading = false;
         });
         return;
@@ -49,7 +41,6 @@ class _PhoneImportSheetState extends ConsumerState<PhoneImportSheet> {
         withProperties: true,
       );
 
-      // Filter to contacts with phone numbers
       final withPhones = contacts
           .where((c) => c.phones.isNotEmpty)
           .toList()
@@ -61,7 +52,8 @@ class _PhoneImportSheetState extends ConsumerState<PhoneImportSheet> {
       });
     } catch (e) {
       setState(() {
-        _error = 'Failed to load contacts. You can add contacts manually instead.';
+        _error =
+            'Failed to load contacts. You can add contacts manually instead.';
         _isLoading = false;
       });
     }
@@ -183,7 +175,8 @@ class _PhoneImportSheetState extends ConsumerState<PhoneImportSheet> {
                   final contact = _contacts![index];
                   return ListTile(
                     leading: CircleAvatar(
-                      backgroundColor: AppColors.accentBrand.withValues(alpha: 0.2),
+                      backgroundColor:
+                          AppColors.accentBrand.withValues(alpha: 0.2),
                       child: Text(
                         contact.displayName.isNotEmpty
                             ? contact.displayName[0].toUpperCase()

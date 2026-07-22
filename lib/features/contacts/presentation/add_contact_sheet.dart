@@ -21,6 +21,7 @@ class _AddContactSheetState extends ConsumerState<AddContactSheet> {
   bool _notifyViaSms = true;
   bool _notifyViaWhatsapp = false;
   bool _isLoading = false;
+  String? _capError;
 
   @override
   void dispose() {
@@ -38,7 +39,16 @@ class _AddContactSheetState extends ConsumerState<AddContactSheet> {
     try {
       final repo = ref.read(contactsRepositoryProvider);
       final contacts = ref.read(contactsStreamProvider).valueOrNull ?? [];
-      
+
+      if (contacts.length >= 5) {
+        setState(() {
+          _capError =
+              'You can add up to 5 trusted contacts. Remove one first to add another.';
+          _isLoading = false;
+        });
+        return;
+      }
+
       final notifyVia = <String>[];
       if (_notifyViaSms) notifyVia.add('sms');
       if (_notifyViaWhatsapp) notifyVia.add('whatsapp');
@@ -59,9 +69,9 @@ class _AddContactSheetState extends ConsumerState<AddContactSheet> {
       if (mounted) Navigator.pop(context);
     } on ContactsLimitException catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
-        );
+        setState(() {
+          _capError = e.toString();
+        });
       }
     } on DuplicatePhoneException catch (e) {
       if (mounted) {
@@ -85,103 +95,122 @@ class _AddContactSheetState extends ConsumerState<AddContactSheet> {
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
-        left: 24,
-        right: 24,
-        top: 24,
       ),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AppColors.borderSubtle,
-                borderRadius: BorderRadius.circular(2),
-              ),
-              alignment: Alignment.center,
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'Add contact',
-              style: AppTextStyles.headingMedium,
-            ),
-            const SizedBox(height: 20),
-            TextFormField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: 'Name *',
-                hintText: 'Enter contact name',
-              ),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Name is required';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _phoneController,
-              decoration: const InputDecoration(
-                labelText: 'Phone *',
-                hintText: '+92xxxxxxxxxx',
-              ),
-              keyboardType: TextInputType.phone,
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Phone number is required';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _relationshipController,
-              decoration: const InputDecoration(
-                labelText: 'Relationship (optional)',
-                hintText: 'e.g. Sister, Best friend',
-              ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'Notify via',
-              style: AppTextStyles.caption.copyWith(
-                color: AppColors.textSecondary,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                _ChannelToggle(
-                  label: 'SMS',
-                  isSelected: _notifyViaSms,
-                  onChanged: (v) => setState(() => _notifyViaSms = v),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AppColors.borderSubtle,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
-                const SizedBox(width: 12),
-                _ChannelToggle(
-                  label: 'WhatsApp',
-                  isSelected: _notifyViaWhatsapp,
-                  onChanged: (v) => setState(() => _notifyViaWhatsapp = v),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'Add contact',
+                style: AppTextStyles.headingMedium,
+              ),
+              const SizedBox(height: 20),
+              if (_capError != null) ...[
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.accentAlert.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: AppColors.accentAlert.withValues(alpha: 0.4),
+                    ),
+                  ),
+                  child: Text(
+                    _capError!,
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: AppColors.accentAlert,
+                    ),
+                  ),
                 ),
+                const SizedBox(height: 16),
               ],
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _isLoading ? null : _save,
-              child: _isLoading
-                  ? const SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Text('Add contact'),
-            ),
-            const SizedBox(height: 16),
-          ],
+              TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Name *',
+                  hintText: 'Enter contact name',
+                ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Name is required';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _phoneController,
+                decoration: const InputDecoration(
+                  labelText: 'Phone *',
+                  hintText: '+92xxxxxxxxxx',
+                ),
+                keyboardType: TextInputType.phone,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Phone number is required';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _relationshipController,
+                decoration: const InputDecoration(
+                  labelText: 'Relationship (optional)',
+                  hintText: 'e.g. Sister, Best friend',
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'Notify via',
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  _ChannelToggle(
+                    label: 'SMS',
+                    isSelected: _notifyViaSms,
+                    onChanged: (v) => setState(() => _notifyViaSms = v),
+                  ),
+                  const SizedBox(width: 12),
+                  _ChannelToggle(
+                    label: 'WhatsApp',
+                    isSelected: _notifyViaWhatsapp,
+                    onChanged: (v) => setState(() => _notifyViaWhatsapp = v),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: _isLoading ? null : _save,
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('Add contact'),
+              ),
+            ],
+          ),
         ),
       ),
     );

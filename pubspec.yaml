@@ -49,7 +49,6 @@ dependencies:
 
   # Contacts & permissions
   flutter_contacts: ^1.1.0
-  permission_handler: ^11.3.0
 
   # Sharing & launching
   share_plus: ^10.0.0
