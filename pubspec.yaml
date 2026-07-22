@@ -57,7 +57,7 @@ dependencies:
 
   # Design system
   google_fonts: ^6.2.1
-  phosphor_flutter: ^2.1.0
+  phosphoricons_flutter: ^1.0.0
 
   cupertino_icons: ^1.0.8
 

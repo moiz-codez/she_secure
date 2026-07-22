@@ -2,7 +2,7 @@
 
 **For:** OpenCode (model: `opencode/big-pickle`) + the `obra/superpowers` skills plugin
 **Stack:** Flutter (Android only, v1) · Firebase
-**Prepared:** 2026-07-19]
+**Prepared:** 2026-07-19
 
 ---
 
@@ -63,7 +63,7 @@
 | Scheduling (fake call) | `flutter_local_notifications` + `android_alarm_manager_plus` | Exact-alarm scheduling that survives Doze/background kill. |
 | Foreground service (active SOS) | `flutter_foreground_task` | Keeps location + send-retry alive without being killed; shows the mandatory persistent notification. |
 | Permissions | `permission_handler` + `app_settings` | Latter deep-links to OS settings when a permission is permanently denied. |
-| Icons | Phosphor Icons (`phosphor_flutter`) | Bolder, more distinctive than default Material icons — fits the design direction in Section 6. |
+| Icons | Phosphor Icons via `phosphoricons_flutter` | Bolder, more distinctive than default Material icons — fits the design direction in Section 6. **Not** the original `phosphor_flutter` package — that one subclasses Flutter's `IconData`, which is a final class under current Dart SDKs, so it's permanently broken (confirmed as of its latest release, 2.1.0). `phosphoricons_flutter` is a community-maintained replacement built specifically to fix this, tracking the same icon set. Usage differs slightly: flat per-style classes (`PhosphorIconsFill.xxx`, `PhosphorIconsRegular.xxx`), not the old nested syntax. |
 | Fonts | Google Fonts: **Sora** (display), **Inter** (body/UI), **JetBrains Mono** (coordinates, timers, timestamps) | Loaded via `google_fonts` package. |
 
 ---
@@ -729,7 +729,7 @@ android_alarm_manager_plus
 flutter_foreground_task
 permission_handler
 app_settings
-phosphor_flutter
+phosphoricons_flutter    # not phosphor_flutter — permanently incompatible with current Dart SDKs, see Section 3
 google_fonts
 ```
 
