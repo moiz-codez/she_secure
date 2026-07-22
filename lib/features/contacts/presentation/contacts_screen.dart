@@ -7,6 +7,8 @@ import 'package:she_secure/shared/theme/app_text_styles.dart';
 import 'add_contact_sheet.dart';
 import 'edit_contact_sheet.dart';
 import 'confirm_delete_sheet.dart';
+import 'phone_import_sheet.dart';
+import 'rationale_screen.dart';
 
 class ContactsScreen extends ConsumerStatefulWidget {
   const ContactsScreen({super.key});
@@ -43,7 +45,7 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
         data: (contacts) {
           if (contacts.isEmpty) {
             return _EmptyState(
-              onAdd: () => _showAddSheet(context),
+              onAdd: () => _showAddOptions(context),
             );
           }
           return _isReordering
@@ -70,10 +72,51 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddSheet(context),
+        onPressed: () => _showAddOptions(context),
         backgroundColor: AppColors.accentBrand,
         child: const Icon(PhosphorIconsBold.plus, color: AppColors.textPrimary),
       ),
+    );
+  }
+
+  void _showAddOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.bgElevated,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => _AddOptionsSheet(
+        onPhoneImport: () => _showRationale(context),
+        onManualAdd: () => _showAddSheet(context),
+      ),
+    );
+  }
+
+  void _showRationale(BuildContext context) {
+    Navigator.pop(context); // Close options sheet
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => RationaleScreen(
+          onContinue: () {
+            Navigator.pop(context); // Close rationale
+            _showPhoneImport(context);
+          },
+        ),
+      ),
+    );
+  }
+
+  void _showPhoneImport(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.bgElevated,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => const PhoneImportSheet(),
     );
   }
 
@@ -338,6 +381,74 @@ class _ReorderableList extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _AddOptionsSheet extends StatelessWidget {
+  final VoidCallback onPhoneImport;
+  final VoidCallback onManualAdd;
+
+  const _AddOptionsSheet({
+    required this.onPhoneImport,
+    required this.onManualAdd,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: AppColors.borderSubtle,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            'Add contact',
+            style: AppTextStyles.headingMedium,
+          ),
+          const SizedBox(height: 20),
+          ListTile(
+            leading: CircleAvatar(
+              backgroundColor: AppColors.accentBrand.withValues(alpha: 0.2),
+              child: const Icon(
+                PhosphorIconsBold.addressBook,
+                color: AppColors.accentBrand,
+              ),
+            ),
+            title: const Text('From phone contacts'),
+            subtitle: Text(
+              'Import from your address book',
+              style: AppTextStyles.captionSmall,
+            ),
+            onTap: onPhoneImport,
+          ),
+          const Divider(height: 1),
+          ListTile(
+            leading: CircleAvatar(
+              backgroundColor: AppColors.accentBrand.withValues(alpha: 0.2),
+              child: const Icon(
+                PhosphorIconsBold.pencilSimple,
+                color: AppColors.accentBrand,
+              ),
+            ),
+            title: const Text('Add manually'),
+            subtitle: Text(
+              'Enter name and phone number',
+              style: AppTextStyles.captionSmall,
+            ),
+            onTap: onManualAdd,
+          ),
+          const SizedBox(height: 16),
+        ],
+      ),
     );
   }
 }
